@@ -1,0 +1,10 @@
+# PyTorch is NOT listed here on purpose: SageMaker GPU images already include a
+# CUDA-enabled version, and reinstalling it can break GPU support.
+streamlit==1.45.1
+transformers>=4.45,<5
+accelerate>=0.33
+huggingface_hub>=0.24
+kokoro==0.9.4
+misaki[en]>=0.9.4
+lameenc>=1.7
+numpy
