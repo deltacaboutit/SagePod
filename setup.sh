@@ -11,6 +11,10 @@ python -c "import torch; print('GPU:', torch.cuda.get_device_name(0) if torch.cu
 echo "==> Installing Python packages"
 python -m pip install -q -r requirements.txt
 python -m spacy download en_core_web_sm -q || true
+# Some SageMaker images ship spacy-curated-transformers, which breaks with the
+# newer spaCy packages installed above and stops the voice model from loading.
+# SagePod does not use it, so remove it.
+python -m pip uninstall -y -q spacy-curated-transformers 2>/dev/null || true
 
 echo "==> Installing espeak-ng (helps the voice pronounce unusual words; optional)"
 if ! command -v espeak-ng >/dev/null 2>&1; then
