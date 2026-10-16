@@ -44,12 +44,15 @@ The model needs about 16 GB of GPU memory.
   *SageMaker Distribution* image in SageMaker Studio JupyterLab.
 - Give the machine at least **50 GB of storage**, because the models take about 16 GB.
 
-Either a **SageMaker Studio JupyterLab space** or a **SageMaker Notebook
-Instance** works.
+A **SageMaker Studio Code Editor space** (the VS Code version), a **Studio
+JupyterLab space**, or a **SageMaker Notebook Instance** all work. In Code
+Editor, open a terminal with **Terminal → New Terminal** to run the commands
+below. When you create the Code Editor space, pick a GPU instance type such
+as `ml.g5.xlarge`. If you don't, it runs on a small machine without a GPU.
 
 ## 2. Set it up (once)
 
-Open a terminal in JupyterLab and run:
+Open a terminal (in Code Editor: **Terminal → New Terminal**) and run:
 
 ```bash
 git clone <this repository's URL> SagePod
@@ -84,6 +87,11 @@ each time you restart the app.
 This keeps the app behind your AWS sign-in, but you must sign in to the AWS
 console on your phone first.
 
+- **Studio Code Editor (VS Code):** run `./run.sh codeeditor`. Take the
+  address of your Code Editor tab, which looks like
+  `https://abc123.studio.us-east-1.sagemaker.aws/codeeditor/default/?folder=...`,
+  and replace everything after `.aws` with `/codeeditor/default/proxy/8501/`.
+  If that page doesn't load, use Option A instead.
 - **Studio JupyterLab:** run `./run.sh studio`. Take the address of your
   JupyterLab page, which looks like
   `https://abc123.studio.us-east-1.sagemaker.aws/jupyterlab/default/lab`, and
@@ -91,7 +99,8 @@ console on your phone first.
 - **Notebook Instance:** run `./run.sh notebook` and open
   `https://<notebook-name>.notebook.<region>.sagemaker.aws/proxy/absolute/8501/`.
 
-The app keeps running while the terminal tab in JupyterLab stays open. You can
+The app keeps running while the terminal stays open in Code Editor or
+JupyterLab. You can
 close your browser and the app keeps going.
 
 ## Settings

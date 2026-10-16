@@ -4,6 +4,7 @@
 #   ./run.sh            Public HTTPS link via Cloudflare (easiest for a phone).
 #                       Requires a password:  SAGEPOD_PASSWORD='...' ./run.sh
 #   ./run.sh studio     Through the SageMaker Studio (JupyterLab) proxy.
+#   ./run.sh codeeditor Through the SageMaker Studio Code Editor (VS Code) proxy.
 #   ./run.sh notebook   Through a SageMaker Notebook Instance proxy.
 #   ./run.sh local      Plain http://localhost:8501 (for testing).
 set -euo pipefail
@@ -43,6 +44,15 @@ case "$MODE" in
     exec streamlit run app.py "${ARGS[@]}" --server.baseUrlPath "$BASE" \
       --server.enableCORS false --server.enableXsrfProtection false
     ;;
+  codeeditor)
+    # Code Editor's proxy removes the /codeeditor/default/proxy/<port> prefix before
+    # passing requests on, and Streamlit works out its own address from the browser,
+    # so no base path is needed here.
+    echo "Open your Code Editor address, but replace everything after the domain with:"
+    echo "    /codeeditor/default/proxy/$PORT/"
+    exec streamlit run app.py "${ARGS[@]}" \
+      --server.enableCORS false --server.enableXsrfProtection false
+    ;;
   notebook)
     BASE="${BASE_PATH:-proxy/absolute/$PORT}"
     echo "Open https://<notebook-name>.notebook.<region>.sagemaker.aws/$BASE/"
@@ -53,5 +63,5 @@ case "$MODE" in
     exec streamlit run app.py "${ARGS[@]}"
     ;;
   *)
-    echo "Unknown mode '$MODE'. Use: tunnel, studio, notebook or local."; exit 1 ;;
+    echo "Unknown mode '$MODE'. Use: tunnel, studio, codeeditor, notebook or local."; exit 1 ;;
 esac
