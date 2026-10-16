@@ -9,7 +9,7 @@ python -c "import torch; print('GPU:', torch.cuda.get_device_name(0) if torch.cu
   || { echo "PyTorch is missing. Use a SageMaker image that includes PyTorch."; exit 1; }
 
 echo "==> Installing Python packages"
-pip install -q -r requirements.txt
+python -m pip install -q -r requirements.txt
 python -m spacy download en_core_web_sm -q || true
 
 echo "==> Installing espeak-ng (helps the voice pronounce unusual words; optional)"

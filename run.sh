@@ -9,6 +9,10 @@
 #   ./run.sh local      Plain http://localhost:8501 (for testing).
 set -euo pipefail
 cd "$(dirname "$0")"
+python -c "import importlib.util as u, sys; sys.exit(not all(u.find_spec(m) for m in ('streamlit', 'kokoro', 'transformers', 'lameenc')))" 2>/dev/null || {
+  echo "Some packages are missing for $(command -v python). Run ./setup.sh first, then try again."
+  exit 1
+}
 MODE="${1:-tunnel}"
 PORT="${PORT:-8501}"
 ARGS=(--server.port "$PORT" --server.headless true --browser.gatherUsageStats false
@@ -36,12 +40,12 @@ case "$MODE" in
         fi
         sleep 1
       done ) &
-    streamlit run app.py "${ARGS[@]}" --server.address 127.0.0.1
+    python -m streamlit run app.py "${ARGS[@]}" --server.address 127.0.0.1
     ;;
   studio)
     BASE="${BASE_PATH:-jupyterlab/default/proxy/absolute/$PORT}"
     echo "Open your JupyterLab address, but replace everything after the domain with:  /$BASE/"
-    exec streamlit run app.py "${ARGS[@]}" --server.baseUrlPath "$BASE" \
+    exec python -m streamlit run app.py "${ARGS[@]}" --server.baseUrlPath "$BASE" \
       --server.enableCORS false --server.enableXsrfProtection false
     ;;
   codeeditor)
@@ -50,17 +54,17 @@ case "$MODE" in
     # so no base path is needed here.
     echo "Open your Code Editor address, but replace everything after the domain with:"
     echo "    /codeeditor/default/proxy/$PORT/"
-    exec streamlit run app.py "${ARGS[@]}" \
+    exec python -m streamlit run app.py "${ARGS[@]}" \
       --server.enableCORS false --server.enableXsrfProtection false
     ;;
   notebook)
     BASE="${BASE_PATH:-proxy/absolute/$PORT}"
     echo "Open https://<notebook-name>.notebook.<region>.sagemaker.aws/$BASE/"
-    exec streamlit run app.py "${ARGS[@]}" --server.baseUrlPath "$BASE" \
+    exec python -m streamlit run app.py "${ARGS[@]}" --server.baseUrlPath "$BASE" \
       --server.enableCORS false --server.enableXsrfProtection false
     ;;
   local)
-    exec streamlit run app.py "${ARGS[@]}"
+    exec python -m streamlit run app.py "${ARGS[@]}"
     ;;
   *)
     echo "Unknown mode '$MODE'. Use: tunnel, studio, codeeditor, notebook or local."; exit 1 ;;
